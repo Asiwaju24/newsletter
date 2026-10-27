@@ -1,0 +1,8 @@
+<li>
+  <div class="grow">
+    <a class="title" href="{{ newsletter.get_absolute_url }}">{{ newsletter.title }}</a>
+    <p class="meta">By {{ newsletter.owner.get_full_name|default:newsletter.owner.username }}{% if newsletter.issue_count %} · {{ newsletter.issue_count }} email{{ newsletter.issue_count|pluralize }} so far{% endif %}</p>
+    <p class="summary">{{ newsletter.description|truncatewords:28 }}</p>
+  </div>
+  <a class="btn secondary" href="{{ newsletter.get_absolute_url }}">Read and join</a>
+</li>

@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Find newsletters · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container section">
+  <div class="page-head"><h1>Find newsletters</h1></div>
+  <form class="filters" method="get" role="search">
+    <label class="visually-hidden" for="q">Search newsletters</label>
+    <input type="search" id="q" name="q" value="{{ query }}" placeholder="Search by name or topic">
+    <button class="btn secondary" type="submit">Search</button>
+  </form>
+  {% if page.object_list %}
+    <ul class="list">{% for newsletter in page %}{% include "newsletters/_newsletter_row.html" %}{% endfor %}</ul>
+    {% include "partials/pagination.html" with qs=pagination_qs %}
+  {% else %}
+    <div class="empty">
+      <h2>{% if query %}Nothing found for “{{ query }}”{% else %}No newsletters yet{% endif %}</h2>
+      <p>{% if query %}Try a shorter word, or clear the search to see everything.{% else %}Be the first. Create one and it will show up here.{% endif %}</p>
+      {% if query %}<a class="btn secondary" href="{% url 'discover' %}">Clear search</a>{% else %}<a class="btn" href="{% url 'newsletter_create' %}">Create a newsletter</a>{% endif %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

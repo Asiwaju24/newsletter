@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}{% if creating %}Write an email{% else %}Edit email{% endif %} · {{ newsletter.title }}{% endblock %}
+{% block content %}
+<div class="container section">
+  <div class="page-head">
+    <div>
+      <p class="crumb"><a href="{% url 'newsletter_manage' newsletter.pk %}">← {{ newsletter.title }}</a></p>
+      <h1>{% if creating %}Write an email{% else %}Edit email{% endif %}</h1>
+    </div>
+  </div>
+  <form method="post" class="stack" style="max-width:52rem" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="form-error">{{ form.non_field_errors }}</div>{% endif %}
+    {% include "partials/field.html" with field=form.subject %}
+    {% include "partials/field.html" with field=form.preheader %}
+
+    <div class="field {% if form.body.errors %}has-error{% endif %}">
+      <label for="{{ form.body.id_for_label }}">Message</label>
+      <div class="editor" data-editor-root data-preview-url="{% url 'markdown_preview' %}">
+        <div class="editor-tabs" role="tablist">
+          <button type="button" role="tab" data-tab="write" aria-selected="true">Write</button>
+          <button type="button" role="tab" data-tab="preview" aria-selected="false">See how it looks</button>
+        </div>
+        {{ form.body }}
+        <div class="preview prose" hidden></div>
+      </div>
+      <p class="help">Just type normally. To style your text: put <code>**stars**</code> around words to make them <strong>bold</strong>, start a line with <code>##</code> for a heading, or start lines with <code>-</code> for a bullet list.</p>
+      {{ form.body.errors }}
+    </div>
+
+    {% include "partials/field.html" with field=form.publish_to_web %}
+    <div class="row">
+      <button class="btn" type="submit">Save draft</button>
+      <a class="btn secondary" href="{% if creating %}{% url 'newsletter_manage' newsletter.pk %}{% else %}{% url 'issue_detail' issue.pk %}{% endif %}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

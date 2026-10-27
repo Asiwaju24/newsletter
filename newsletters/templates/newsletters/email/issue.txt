@@ -1,0 +1,10 @@
+{% autoescape off %}{{ issue.subject }}
+From {{ newsletter.title }}
+
+{{ body_markdown }}
+
+--
+{% if web_url %}Read this email in your browser: {{ web_url }}
+{% endif %}You're getting this because you signed up for {{ newsletter.title }}.
+Don't want these emails any more? Unsubscribe here: {{ unsubscribe_url }}
+{% endautoescape %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}{{ issue.subject }} · {{ newsletter.title }}{% endblock %}
+{% block content %}
+<div class="container section">
+  <div class="page-head">
+    <div>
+      <p class="crumb"><a href="{% url 'newsletter_manage' newsletter.pk %}">← {{ newsletter.title }}</a></p>
+      <h1>{{ issue.subject }}</h1>
+    </div>
+    <span class="badge {{ issue.status }}">{{ issue.get_status_display }}{% if issue.status == "scheduled" %} · {{ issue.scheduled_at|date:"j M Y, H:i" }}{% endif %}</span>
+  </div>
+
+  <div class="layout-split">
+    <section aria-label="Email preview">
+      <div class="panel">
+        {% if issue.preheader %}<p class="muted small">Preview text: {{ issue.preheader }}</p>{% endif %}
+        <div class="prose">{{ issue.body_html|safe }}</div>
+      </div>
+    </section>
+
+    <aside class="stack">
+      {% if issue.status == "draft" or issue.status == "scheduled" %}
+      <div class="panel send-panel">
+        <h2>Send this email</h2>
+        <p class="muted" style="margin:0">It will go to <strong>{{ recipients }}</strong> subscriber{{ recipients|pluralize }}.{% if not recipients %} Share your signup link first, then come back.{% endif %}</p>
+
+        <form method="post" action="{% url 'issue_action' issue.pk %}">{% csrf_token %}
+          <input type="hidden" name="action" value="test">
+          <div class="field" style="margin-bottom:0.6rem"><label for="test-email">1. Send yourself a test</label>{{ test_form.email }}</div>
+          <button class="btn secondary" type="submit">Send test</button>
+        </form>
+
+        {% if issue.status == "draft" %}
+        <form method="post" action="{% url 'issue_action' issue.pk %}" data-confirm="Send “{{ issue.subject }}” to {{ recipients }} subscriber{{ recipients|pluralize }} now? This can't be undone.">{% csrf_token %}
+          <input type="hidden" name="action" value="send_now">
+          <label style="display:block;font-weight:650;margin-bottom:0.6rem">2. Send it</label>
+          <button class="btn" type="submit" {% if not recipients %}disabled{% endif %}>Send now</button>
+          {% if not inline_sending %}<p class="help small muted" style="margin:0.6rem 0 0">It joins the sending queue and goes out within a minute or two.</p>{% endif %}
+        </form>
+        {% endif %}
+
+        <form method="post" action="{% url 'issue_action' issue.pk %}">{% csrf_token %}
+          <input type="hidden" name="action" value="schedule">
+          <div class="field" style="margin-bottom:0.6rem"><label for="{{ schedule_form.scheduled_at.id_for_label }}">{% if issue.status == "scheduled" %}Change the send time{% else %}Or pick a time to send it{% endif %}</label>{{ schedule_form.scheduled_at }}
+            <p class="help">Times are in {{ TIME_ZONE|default:"the server's time zone" }} time.</p></div>
+          <button class="btn secondary" type="submit" {% if not recipients %}disabled{% endif %}>Schedule</button>
+        </form>
+
+        {% if issue.status == "scheduled" %}
+        <form method="post" action="{% url 'issue_action' issue.pk %}">{% csrf_token %}
+          <input type="hidden" name="action" value="unschedule">
+          <button class="btn quiet" type="submit">Cancel the scheduled send</button>
+        </form>
+        {% endif %}
+      </div>
+      <div class="row"><a class="btn secondary" href="{% url 'issue_edit' issue.pk %}">Edit email</a><a class="btn quiet destructive" href="{% url 'issue_delete' issue.pk %}">Delete…</a></div>
+
+      {% elif issue.status == "sending" %}
+      <div class="panel"><h2>Sending now</h2><p class="muted">This email is going out. Refresh this page in a minute to see the results.</p></div>
+
+      {% else %}
+      <div class="panel">
+        <h2>Results</h2>
+        <dl class="stats" style="margin-bottom:1rem">
+          <div><dt>People reached</dt><dd>{{ delivered }}</dd></div>
+          {% if failed %}<div><dt>Didn't go through</dt><dd style="color:var(--red)">{{ failed }}</dd></div>{% endif %}
+          {% if skipped %}<div><dt>Skipped</dt><dd>{{ skipped }}</dd></div>{% endif %}
+        </dl>
+        <p class="muted small">Sent {{ issue.sent_at|date:"j M Y, H:i" }}.{% if skipped %} “Skipped” means the person unsubscribed while the email was going out.{% endif %}</p>
+        {% if failed %}
+        <form method="post" action="{% url 'issue_action' issue.pk %}">{% csrf_token %}
+          <input type="hidden" name="action" value="retry">
+          <button class="btn" type="submit">Try again for the {{ failed }} that failed</button>
+        </form>
+        {% endif %}
+        {% if issue.is_public %}<p style="margin:1rem 0 0"><a href="{{ issue.get_absolute_url }}">See it on your public page</a></p>{% endif %}
+      </div>
+      <div class="row"><a class="btn quiet destructive" href="{% url 'issue_delete' issue.pk %}">Delete…</a></div>
+      {% endif %}
+    </aside>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}{{ issue.subject }} · {{ newsletter.title }}{% endblock %}
+{% block description %}{{ issue.preheader|default:newsletter.description|truncatechars:155 }}{% endblock %}
+{% block content %}
+<article class="container section">
+  <header class="issue-head">
+    <p class="crumb"><a href="{{ newsletter.get_absolute_url }}">{{ newsletter.title }}</a></p>
+    <h1>{{ issue.subject }}</h1>
+    <p class="muted"><time datetime="{{ issue.sent_at|date:'c' }}">{{ issue.sent_at|date:"j F Y" }}</time></p>
+  </header>
+  <div class="prose">{{ issue.body_html|safe }}</div>
+
+  {% if newsletter.accepting_subscribers %}
+  <aside class="panel" style="max-width:var(--measure);margin-top:3rem">
+    <h2>Want the next one in your inbox?</h2>
+    {% include "newsletters/_subscribe_form.html" %}
+  </aside>
+  {% endif %}
+</article>
+{% endblock %}

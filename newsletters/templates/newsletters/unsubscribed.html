@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Unsubscribed · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container narrow center-card">
+  <div class="panel">
+    <h1>You've been unsubscribed</h1>
+    <p class="muted"><strong>{{ subscription.email }}</strong> won't get any more emails from {{ newsletter.title }}. Changed your mind? You can join again any time.</p>
+    <a class="btn secondary" href="{{ newsletter.get_absolute_url }}">Back to {{ newsletter.title }}</a>
+  </div>
+</div>
+{% endblock %}

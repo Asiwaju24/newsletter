@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Check your email · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container narrow center-card">
+  <div class="panel">
+    <h1>Check your email</h1>
+    <p>We've sent a message to confirm your address. Open it and click the button to finish joining <strong>{{ newsletter.title }}</strong>.</p>
+    <p class="muted">Can't see it after a few minutes? Look in your spam or junk folder, then try joining again.</p>
+    <a class="btn secondary" href="{{ newsletter.get_absolute_url }}">Back to {{ newsletter.title }}</a>
+  </div>
+</div>
+{% endblock %}

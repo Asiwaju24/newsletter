@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Are you sure? · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container narrow center-card">
+  <div class="panel">
+    <h1>{{ heading }}</h1>
+    <p class="muted">{{ detail }}</p>
+    <form method="post">{% csrf_token %}
+      <div class="row"><button class="btn danger" type="submit">Yes, delete it</button><a class="btn secondary" href="{{ cancel_url }}">No, go back</a></div>
+    </form>
+  </div>
+</div>
+{% endblock %}

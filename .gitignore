@@ -1,0 +1,58 @@
+# ==========================================
+# Django & Python Core
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+*.pot
+local_settings.py
+
+# ==========================================
+# Environments & Secrets
+# ==========================================
+.env
+.venv/
+env/
+venv/
+ENV/
+*.bak
+*.config
+
+# ==========================================
+# Databases & Media
+# ==========================================
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+
+# ==========================================
+# UI & Assets (Tailwind / Node if applicable)
+# ==========================================
+node_modules/
+.sass-cache/
+npm-debug.log*
+
+# ==========================================
+# Testing & Code Quality
+# ==========================================
+htmlcov/
+.tox/
+.coverage
+.cache
+.pytest_cache/
+.mypy_cache/
+
+# ==========================================
+# IDEs & Editors
+# ==========================================
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+.DS_Store
+Thumbs.db

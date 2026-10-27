@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ newsletter.title }} · {{ SITE_NAME }}{% endblock %}
+{% block description %}{{ newsletter.description|truncatechars:155 }}{% endblock %}
+{% block content %}
+<div class="container section">
+  <header style="margin-bottom:2rem">
+    <h1>{{ newsletter.title }}</h1>
+    <p class="muted">By {{ newsletter.owner.get_full_name|default:newsletter.owner.username }}</p>
+    <div class="prose"><p>{{ newsletter.description|linebreaksbr }}</p></div>
+  </header>
+  <div class="layout-split aside-first">
+    <div>
+      <h2>Past emails</h2>
+      {% if issues %}
+        <ul class="list">
+          {% for issue in issues %}
+          <li>
+            <div class="grow"><a class="title" href="{{ issue.get_absolute_url }}">{{ issue.subject }}</a>
+              {% if issue.preheader %}<p class="meta">{{ issue.preheader }}</p>{% endif %}</div>
+            <time class="muted small nowrap" datetime="{{ issue.sent_at|date:'c' }}">{{ issue.sent_at|date:"j M Y" }}</time>
+          </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p class="muted">Nothing has been shared yet. Join and you'll get the first email as soon as it's sent.</p>
+      {% endif %}
+    </div>
+
+    <aside class="panel" aria-labelledby="subscribe-heading">
+      <h2 id="subscribe-heading">Get every new email in your inbox</h2>
+      {% if newsletter.accepting_subscribers %}
+        {% include "newsletters/_subscribe_form.html" %}
+      {% else %}
+        <p class="muted">This newsletter isn't taking new readers right now.</p>
+      {% endif %}
+    </aside>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,12 @@
+<div class="page-head">
+  <div>
+    <p class="crumb"><a href="{% url 'dashboard' %}">← My newsletters</a></p>
+    <h1>{{ newsletter.title }}</h1>
+  </div>
+  <a class="btn" href="{% url 'issue_create' newsletter.pk %}">Write an email</a>
+</div>
+<nav class="tabs" aria-label="Newsletter sections">
+  <a href="{% url 'newsletter_manage' newsletter.pk %}" {% if active == "issues" %}aria-current="page"{% endif %}>Emails</a>
+  <a href="{% url 'subscriber_list' newsletter.pk %}" {% if active == "subscribers" %}aria-current="page"{% endif %}>Subscribers</a>
+  <a href="{% url 'newsletter_settings' newsletter.pk %}" {% if active == "settings" %}aria-current="page"{% endif %}>Settings</a>
+</nav>

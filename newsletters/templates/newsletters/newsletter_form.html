@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}{% if creating %}Create a newsletter{% else %}Settings{% endif %} · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container section">
+  {% if not creating %}{% include "newsletters/_manage_header.html" with active="settings" %}{% else %}
+  <div class="page-head"><h1>Create a newsletter</h1></div>{% endif %}
+  <div style="max-width:var(--measure)">
+    <form method="post" class="panel" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="form-error">{{ form.non_field_errors }}</div>{% endif %}
+      {% for field in form %}{% include "partials/field.html" %}{% endfor %}
+      <div class="row">
+        <button class="btn" type="submit">{% if creating %}Create newsletter{% else %}Save changes{% endif %}</button>
+        <a class="btn secondary" href="{% if creating %}{% url 'dashboard' %}{% else %}{% url 'newsletter_manage' newsletter.pk %}{% endif %}">Cancel</a>
+      </div>
+    </form>
+    {% if not creating %}
+    <div class="panel flat" style="margin-top:2rem;border-color:var(--red)">
+      <h2>Delete this newsletter</h2>
+      <p class="muted">This removes the newsletter, all of its emails, and its list of subscribers.</p>
+      <a class="btn danger" href="{% url 'newsletter_delete' newsletter.pk %}">Delete newsletter…</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Subscribers · {{ newsletter.title }}{% endblock %}
+{% block content %}
+<div class="container section">
+  {% include "newsletters/_manage_header.html" with active="subscribers" %}
+
+  <form class="filters" method="get" role="search">
+    <label class="visually-hidden" for="q">Search by email address</label>
+    <input type="search" id="q" name="q" value="{{ query }}" placeholder="Search by email address">
+    <label class="visually-hidden" for="status">Show</label>
+    <select id="status" name="status">
+      <option value="">Everyone</option>
+      {% for value, label in statuses %}<option value="{{ value }}" {% if value == status %}selected{% endif %}>{{ label }}</option>{% endfor %}
+    </select>
+    <button class="btn secondary" type="submit">Filter</button>
+    <a class="btn quiet" href="{% url 'subscriber_export' newsletter.pk %}">Download list (CSV)</a>
+  </form>
+
+  {% if page.object_list %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Email address</th><th>Status</th><th>Joined</th><th><span class="visually-hidden">Actions</span></th></tr></thead>
+      <tbody>
+      {% for sub in page %}
+        <tr>
+          <td>{{ sub.email }}</td>
+          <td><span class="badge {{ sub.status }}">{{ sub.get_status_display }}</span></td>
+          <td class="muted nowrap">{{ sub.created_at|date:"j M Y" }}</td>
+          <td style="text-align:right">
+            <form method="post" action="{% url 'subscriber_remove' newsletter.pk sub.pk %}" data-confirm="Remove {{ sub.email }} from your list?">{% csrf_token %}
+              <button class="btn quiet destructive small" type="submit">Remove</button></form>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% include "partials/pagination.html" with qs=pagination_qs %}
+  {% else %}
+  <div class="empty">
+    <h2>{% if query or status %}Nobody matches that{% else %}No subscribers yet{% endif %}</h2>
+    <p>{% if query or status %}Clear the search or filter to see everyone.{% else %}Share your signup link. People show up here as soon as they join, and become “Active” once they click the confirmation link in their email.{% endif %}</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

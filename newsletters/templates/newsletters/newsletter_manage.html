@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}{{ newsletter.title }} · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container section">
+  {% include "newsletters/_manage_header.html" with active="issues" %}
+
+  <div class="share">
+    <strong>Your signup page</strong>
+    <span class="muted small">Share this link anywhere. Anyone who opens it can join your newsletter.</span>
+    <div class="row"><code>{{ public_url }}</code><button class="btn secondary small" type="button" data-copy="{{ public_url }}">Copy link</button></div>
+  </div>
+
+  <dl class="stats">
+    <div><dt>Subscribed</dt><dd>{{ confirmed }}</dd></div>
+    <div><dt>Waiting to confirm</dt><dd>{{ pending }}</dd></div>
+    <div><dt>Unsubscribed</dt><dd>{{ unsubscribed }}</dd></div>
+  </dl>
+
+  {% if issues %}
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Email</th><th>Status</th><th>Date</th><th>People reached</th></tr></thead>
+      <tbody>
+      {% for issue in issues %}
+        <tr>
+          <td><a href="{% url 'issue_detail' issue.pk %}"><strong>{{ issue.subject }}</strong></a></td>
+          <td><span class="badge {{ issue.status }}">{{ issue.get_status_display }}</span>{% if issue.failed_count %} <span class="badge failed">{{ issue.failed_count }} didn't go through</span>{% endif %}</td>
+          <td class="muted nowrap">{% if issue.sent_at %}{{ issue.sent_at|date:"j M Y, H:i" }}{% elif issue.scheduled_at %}{{ issue.scheduled_at|date:"j M Y, H:i" }}{% else %}Edited {{ issue.updated_at|date:"j M Y" }}{% endif %}</td>
+          <td class="muted">{% if issue.status == "sent" %}{{ issue.recipients_count }}{% else %}—{% endif %}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty">
+    <h2>You haven't written an email yet</h2>
+    <p>Write your first one, send yourself a test, then share your signup link so people can join.</p>
+    <a class="btn" href="{% url 'issue_create' newsletter.pk %}">Write your first email</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

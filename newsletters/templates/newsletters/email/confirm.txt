@@ -1,0 +1,10 @@
+{% autoescape off %}Please confirm your email address
+
+You asked to get emails from {{ newsletter.title }}. To finish joining, open this link:
+
+{{ confirm_url }}
+
+Didn't ask for this? Just ignore this message and you won't be added.
+
+{{ site_name }}
+{% endautoescape %}

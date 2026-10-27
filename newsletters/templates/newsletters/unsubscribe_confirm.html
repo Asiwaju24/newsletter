@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Unsubscribe · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container narrow center-card">
+  <div class="panel">
+    {% if subscription.status == "unsubscribed" %}
+      <h1>You've already left</h1>
+      <p class="muted"><strong>{{ subscription.email }}</strong> won't get any more emails from {{ newsletter.title }}.</p>
+    {% else %}
+      <h1>Unsubscribe from {{ newsletter.title }}?</h1>
+      <p class="muted">{{ subscription.email }} will stop getting emails straight away.</p>
+      <form method="post">{% csrf_token %}
+        <div class="row"><button class="btn danger" type="submit">Yes, unsubscribe me</button><a class="btn secondary" href="{{ newsletter.get_absolute_url }}">No, keep me subscribed</a></div>
+      </form>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

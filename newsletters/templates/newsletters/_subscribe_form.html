@@ -1,0 +1,11 @@
+<form method="post" action="{{ newsletter.get_absolute_url }}" novalidate>
+  {% csrf_token %}
+  <div class="hp" aria-hidden="true"><label>Leave this empty {{ form.website }}</label></div>
+  <label class="visually-hidden" for="{{ form.email.id_for_label }}">Your email address</label>
+  <div class="inline-form">
+    {{ form.email }}
+    <button class="btn" type="submit">Join</button>
+  </div>
+  {{ form.email.errors }}
+  <p class="small muted" style="margin:0.7rem 0 0">We'll send you a quick message to confirm it's really you. You can leave at any time with one click.</p>
+</form>

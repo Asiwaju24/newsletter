@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}You're subscribed · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container narrow center-card">
+  <div class="panel">
+    <h1>You're subscribed</h1>
+    <p>Thanks for confirming. You'll get the next email from <strong>{{ newsletter.title }}</strong> in your inbox.</p>
+    <a class="btn secondary" href="{{ newsletter.get_absolute_url }}">Read past emails</a>
+  </div>
+</div>
+{% endblock %}

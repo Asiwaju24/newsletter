@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}My newsletters · {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<div class="container section">
+  <div class="page-head">
+    <h1>{% if user.first_name %}Hi {{ user.first_name }} 👋{% else %}My newsletters{% endif %}</h1>
+    <a class="btn" href="{% url 'newsletter_create' %}">Create a newsletter</a>
+  </div>
+
+  {% if newsletters %}
+    <dl class="stats">
+      <div><dt>People subscribed</dt><dd>{{ stats.subscribers }}</dd></div>
+      <div><dt>Joined in the last 30 days</dt><dd>{{ stats.new_subscribers }}</dd></div>
+      <div><dt>Emails sent</dt><dd>{{ stats.issues_sent }}</dd></div>
+      <div><dt>Newsletters</dt><dd>{{ stats.newsletters }}</dd></div>
+    </dl>
+
+    {% if upcoming %}
+    <section style="margin-bottom:2rem">
+      <h2>Going out soon</h2>
+      <ul class="list">{% for issue in upcoming %}
+        <li><div class="grow"><a class="title" href="{% url 'issue_detail' issue.pk %}">{{ issue.subject }}</a><p class="meta">{{ issue.newsletter.title }}</p></div>
+        <span class="badge scheduled">{{ issue.scheduled_at|date:"j M, H:i" }}</span></li>
+      {% endfor %}</ul>
+    </section>
+    {% endif %}
+
+    <h2>Your newsletters</h2>
+    <ul class="list">
+      {% for newsletter in newsletters %}
+      <li>
+        <div class="grow">
+          <a class="title" href="{% url 'newsletter_manage' newsletter.pk %}">{{ newsletter.title }}</a>
+          <p class="meta">{{ newsletter.confirmed_count }} subscriber{{ newsletter.confirmed_count|pluralize }} · {{ newsletter.sent_count }} email{{ newsletter.sent_count|pluralize }} sent{% if not newsletter.is_public %} · Hidden from the directory{% endif %}{% if not newsletter.accepting_subscribers %} · Not taking new readers{% endif %}</p>
+        </div>
+        <div class="row"><a class="btn secondary small" href="{% url 'issue_create' newsletter.pk %}">Write an email</a><a class="btn quiet small" href="{{ newsletter.get_absolute_url }}">Open signup page</a></div>
+      </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <div class="empty">
+      <h2>Start your first newsletter</h2>
+      <p>Give it a name and a short description. You'll get a link to share, and anyone who opens it can join.</p>
+      <a class="btn large" href="{% url 'newsletter_create' %}">Create a newsletter</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
